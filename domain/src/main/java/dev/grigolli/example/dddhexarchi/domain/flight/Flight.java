@@ -10,6 +10,7 @@ import java.time.LocalTime;
 
 public class Flight extends AggregateRoot<FlightID> implements Cloneable {
 
+    private String flightNumber;
     private LocalDate departureDate;
     private LocalTime scheduledDepartureTime;
     private LocalTime actualDepartureTime;
@@ -23,6 +24,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
 
     private Flight(
             final FlightID anID,
+            final String flightNumber,
             final LocalDate departureDate,
             final LocalTime scheduledDepartureTime,
             final LocalTime actualDepartureTime,
@@ -35,6 +37,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
             final FlightStatus status
     ) {
         super(anID);
+        this.flightNumber = flightNumber;
         this.departureDate = departureDate;
         this.scheduledDepartureTime = scheduledDepartureTime;
         this.actualDepartureTime = actualDepartureTime;
@@ -49,6 +52,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
     }
 
     public static Flight newFlight(
+            final String flightNumber,
             final LocalDate departureDate,
             final LocalTime scheduledDepartureTime,
             final LocalTime scheduledArrivalTime,
@@ -59,6 +63,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         final var id = FlightID.unique();
         return new Flight(
                 id,
+                flightNumber,
                 departureDate,
                 scheduledDepartureTime,
                 null,
@@ -74,6 +79,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
 
     public static Flight with(
             final FlightID anID,
+            final String flightNumber,
             final LocalDate departureDate,
             final LocalTime scheduledDepartureTime,
             final LocalTime scheduledArrivalTime,
@@ -87,6 +93,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
 
     ) {
         return new Flight(anID,
+                flightNumber,
                 departureDate,
                 scheduledDepartureTime,
                 actualDepartureTime,
@@ -119,6 +126,10 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
     }
 
     public LocalDate getDepartureDate() {
