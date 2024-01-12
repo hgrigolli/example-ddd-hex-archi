@@ -4,7 +4,9 @@ import dev.grigolli.example.dddhexarchi.domain.exceptions.DomainException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 class FlightTest {
@@ -355,5 +357,319 @@ class FlightTest {
         // then
         Assertions.assertEquals("Arrival airport is required", domainException.getMessage());
     }
+
+    @Test
+    void givenAFlight_whenCallCancel_thenShouldCancelTheFlight() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 20),
+                LocalTime.of(18, 10),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+
+        // when
+        aFlight.cancel();
+
+        // then
+        Assertions.assertEquals(FlightStatus.CANCELLED, aFlight.getStatus());
+    }
+
+    @Test
+    void givenAFlight_whenCallReschedule_thenShouldRescheduleTheFlight() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 20),
+                LocalTime.of(18, 10),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+
+        // when
+        aFlight.reschedule(
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 30),
+                LocalTime.of(18, 20)
+        );
+
+        // then
+        Assertions.assertEquals(LocalDate.of(2024, 1, 12), aFlight.getDepartureDate());
+        Assertions.assertEquals(LocalTime.of(17, 30), aFlight.getScheduledDepartureTime());
+        Assertions.assertEquals(LocalTime.of(18, 20), aFlight.getScheduledArrivalTime());
+    }
+
+    @Test
+    void givenAFlight_whenCallBoard_thenShouldBoardTheFlight() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 20),
+                LocalTime.of(18, 10),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+
+        // when
+        aFlight.board();
+
+        // then
+        Assertions.assertEquals(FlightStatus.BOARDING, aFlight.getStatus());
+    }
+
+    @Test
+    void givenAFlight_whenCallDepart_thenShouldDepartTheFlight() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 20),
+                LocalTime.of(18, 10),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+
+        // when
+        aFlight.depart();
+
+        // then
+        Assertions.assertEquals(FlightStatus.DEPARTED, aFlight.getStatus());
+    }
+
+    @Test
+    void givenAFlight_whenCallLand_thenShouldLandTheFlight() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 20),
+                LocalTime.of(18, 10),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+
+        // when
+        aFlight.land();
+
+        // then
+        Assertions.assertEquals(FlightStatus.LANDED, aFlight.getStatus());
+    }
+
+    @Test
+    void givenAFlight_whenCallArrive_thenShouldArriveTheFlight() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 20),
+                LocalTime.of(18, 10),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+
+        // when
+        aFlight.arrive();
+
+        // then
+        Assertions.assertEquals(FlightStatus.ARRIVED, aFlight.getStatus());
+    }
+
+    @Test
+    void givenAFlight_whenCallDelay_thenShouldDelayTheFlight() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(17, 20),
+                LocalTime.of(18, 10),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedDelay = 30;
+
+        // when
+        aFlight.delay(expectedDelay);
+
+        // then
+        Assertions.assertEquals(FlightStatus.DELAYED, aFlight.getStatus());
+        Assertions.assertEquals(expectedDelay, aFlight.getDelay());
+    }
+
+    @Test
+    void givenAFlight_whenCallDelayWithNegativeValue_thenShouldThrowADomainException() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedDelay = -30;
+
+        // when
+        final var domainException = Assertions.assertThrows(
+                DomainException.class,
+                () -> aFlight.delay(expectedDelay)
+        );
+
+        // then
+        Assertions.assertEquals("Delay must be greater than zero", domainException.getMessage());
+    }
+
+    @Test
+    void givenAFlight_whenCallDelayWithZeroValue_thenShouldThrowADomainException() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedDelay = 0;
+
+        // when
+        final var domainException = Assertions.assertThrows(
+                DomainException.class,
+                () -> aFlight.delay(expectedDelay)
+        );
+
+        // then
+        Assertions.assertEquals("Delay must be greater than zero", domainException.getMessage());
+    }
+
+    @Test
+    void givenAFlight_whenCallDelayWithNullValue_thenShouldThrowADomainException() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final Duration expectedDelay = null;
+
+        // when
+        final var domainException = Assertions.assertThrows(
+                DomainException.class,
+                () -> aFlight.delay(expectedDelay)
+        );
+
+        // then
+        Assertions.assertEquals("Delay is required", domainException.getMessage());
+    }
+
+    @Test
+    void givenAFlight_whenCallDelayWithNullValue_thenShouldThrowADomainException() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 12),
+                null,
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final Duration expectedDelay = null;
+
+        // when
+        final var domainException = Assertions.assertThrows(
+                DomainException.class,
+                () -> aFlight.delay(expectedDelay)
+        );
+
+        // then
+        Assertions.assertEquals("Delay is required", domainException.getMessage());
+    }
+
+    @Test
+    void givenAFlight_whenCallOnHold_thenShouldPutTheFlightOnHold() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 13),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedOnHoldUntil = LocalDateTime.of(2024, 1, 14, 20, 10);
+
+        // when
+        aFlight.onHold(expectedOnHoldUntil);
+
+        // then
+        Assertions.assertEquals(FlightStatus.ON_HOLD, aFlight.getStatus());
+        Assertions.assertEquals(expectedOnHoldUntil, aFlight.getOnHoldUntil());
+    }
+
+    @Test
+    void givenAFlight_whenCallOnHoldWithNullValue_thenShouldThrowADomainException() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 13),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final LocalDateTime expectedOnHoldUntil = null;
+
+        // when
+        final var domainException = Assertions.assertThrows(
+                DomainException.class,
+                () -> aFlight.onHold(expectedOnHoldUntil)
+        );
+
+        // then
+        Assertions.assertEquals("On hold until is required", domainException.getMessage());
+    }
+
+    @Test
+    void givenAFlight_whenCallInAir_thenShouldPutTheFlightInAir() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 13),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+
+        // when
+        aFlight.inAir();
+
+        // then
+        Assertions.assertEquals(FlightStatus.IN_AIR, aFlight.getStatus());
+    }
+
+
+
+
 
 }
