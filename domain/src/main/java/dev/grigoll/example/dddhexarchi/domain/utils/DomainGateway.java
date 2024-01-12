@@ -1,8 +1,9 @@
 package dev.grigoll.example.dddhexarchi.domain.utils;
 
-import br.com.docenela.admin.domain.Identifier;
-import br.com.docenela.admin.domain.pagination.Pagination;
-import br.com.docenela.admin.domain.pagination.SearchQuery;
+
+import dev.grigoll.example.dddhexarchi.domain.Identifier;
+import dev.grigoll.example.dddhexarchi.domain.pagination.Pagination;
+import dev.grigoll.example.dddhexarchi.domain.pagination.SearchQuery;
 
 import java.util.List;
 import java.util.Optional;

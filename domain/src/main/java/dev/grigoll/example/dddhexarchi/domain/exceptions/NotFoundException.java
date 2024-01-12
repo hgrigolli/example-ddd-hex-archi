@@ -1,13 +1,15 @@
 package dev.grigoll.example.dddhexarchi.domain.exceptions;
 
-import br.com.docenela.admin.domain.Identifier;
+
+import dev.grigoll.example.dddhexarchi.domain.Identifier;
+import dev.grigoll.example.dddhexarchi.domain.validation.DomainError;
 
 import java.util.List;
 
 
 public class NotFoundException extends DomainException {
 
-    protected NotFoundException(final String aMessage, final List<Error> anErrors) {
+    protected NotFoundException(final String aMessage, final List<DomainError> anErrors) {
         super(aMessage, anErrors);
     }
 
@@ -20,10 +22,10 @@ public class NotFoundException extends DomainException {
                 id.getValue()
         );
 
-        return new NotFoundException(anError, List.of(new Error(anError)));
+        return new NotFoundException(anError, List.of(new DomainError(anError)));
     }
 
-    public static NotFoundException with(final Error error) {
+    public static NotFoundException with(final DomainError error) {
         return new NotFoundException(error.message(), List.of(error));
     }
 
