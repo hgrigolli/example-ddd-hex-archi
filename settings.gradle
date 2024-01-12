@@ -1,0 +1,5 @@
+rootProject.name = 'example-ddd-hex-archi'
+include 'domain'
+include 'application'
+include 'infrastructure'
+
