@@ -302,6 +302,35 @@ class FlightTest {
     }
 
     @Test
+    void givenAInvalidFlightWithDepartureAirportLessThan3Char_whenCallNewFlight_thenShouldThrowADomainException() {
+        // given
+        final var expectedFlightNumber = "JJ1234";
+        final var expectedDepartureDate = LocalDate.of(2024, 1, 13);
+        final var expectedScheduledDepartureTime = LocalTime.of(18, 10);
+        final var expectedScheduledArrivalTime = LocalTime.of(19, 0);
+        final var expectedAircraftID = "B737";
+        final var expectedDepartureAirport = "GR";
+        final var expectedArrivalAirport = "CGR";
+
+        // when
+        final var domainException = Assertions.assertThrows(
+                DomainException.class,
+                () -> Flight.newFlight(
+                        expectedFlightNumber,
+                        expectedDepartureDate,
+                        expectedScheduledDepartureTime,
+                        expectedScheduledArrivalTime,
+                        expectedAircraftID,
+                        expectedDepartureAirport,
+                        expectedArrivalAirport
+                )
+        );
+
+        // then
+        Assertions.assertEquals("Airport code must be 3 characters", domainException.getMessage());
+    }
+
+    @Test
     void givenAInvalidFlightWithNullArrivalAirport_whenCallNewFlight_thenShouldThrowADomainException() {
         // given
         final var expectedFlightNumber = "JJ1234";
@@ -356,6 +385,35 @@ class FlightTest {
 
         // then
         Assertions.assertEquals("Arrival airport is required", domainException.getMessage());
+    }
+
+    @Test
+    void givenAInvalidFlightWithArrivalAirportLessThan3Char_whenCallNewFlight_thenShouldThrowADomainException() {
+        // given
+        final var expectedFlightNumber = "JJ1234";
+        final var expectedDepartureDate = LocalDate.of(2024, 1, 13);
+        final var expectedScheduledDepartureTime = LocalTime.of(18, 10);
+        final var expectedScheduledArrivalTime = LocalTime.of(19, 0);
+        final var expectedAircraftID = "B737";
+        final var expectedDepartureAirport = "GRU";
+        final var expectedArrivalAirport = "CG";
+
+        // when
+        final var domainException = Assertions.assertThrows(
+                DomainException.class,
+                () -> Flight.newFlight(
+                        expectedFlightNumber,
+                        expectedDepartureDate,
+                        expectedScheduledDepartureTime,
+                        expectedScheduledArrivalTime,
+                        expectedAircraftID,
+                        expectedDepartureAirport,
+                        expectedArrivalAirport
+                )
+        );
+
+        // then
+        Assertions.assertEquals("Airport code must be 3 characters", domainException.getMessage());
     }
 
     @Test
