@@ -6,6 +6,7 @@ import dev.grigolli.example.dddhexarchi.domain.validation.handler.ThrowsValidati
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Flight extends AggregateRoot<FlightID> implements Cloneable {
@@ -170,5 +171,39 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
 
     public FlightStatus getStatus() {
         return status;
+    }
+
+    public void cancel() {
+    }
+
+    public void reschedule(
+            final LocalDate newDepartureDate,
+            final LocalTime newScheduledDepartureTime,
+            final LocalTime newScheduledArrivalTime
+    ) {
+        this.departureDate = newDepartureDate;
+        this.scheduledDepartureTime = newScheduledDepartureTime;
+        this.scheduledArrivalTime = newScheduledArrivalTime;
+    }
+
+    public void board() {
+    }
+
+    public void depart() {
+    }
+
+    public void land() {
+    }
+
+    public void arrive() {
+    }
+
+    public void delay(Duration expectedDelay) {
+    }
+
+    public void onHold(LocalDateTime expectedOnHoldUntil) {
+    }
+
+    public void inAir() {
     }
 }
