@@ -1,17 +1,72 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.flywaydb:flyway-database-postgresql:10.0.1'
+    }
+}
+
 plugins {
     id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '3.1.6-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id('org.flywaydb.flyway') version '10.0.1'
 }
 
 group = 'dev.grigoll.example.dddhexarchi.infrastructure'
 version = '1.0-SNAPSHOT'
 
+bootJar {
+    archiveFileName = "admin-infrastructure.jar"
+    destinationDirectory.set(file("${rootProject.buildDir}/libs"))
+}
+
+java {
+    sourceCompatibility = '17'
+}
+
 repositories {
     mavenCentral()
+    maven {
+        url "https://download.red-gate.com/maven/release"
+    }
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation(project(":domain"))
+    implementation(project(":application"))
+
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+
+    implementation('org.springframework.boot:spring-boot-starter')
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-undertow')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+
+    implementation('org.postgresql:postgresql:42.6.0')
+    implementation ('org.flywaydb:flyway-core:10.0.1')
+    implementation ('org.flywaydb:flyway-database-postgresql:10.0.1')
+
+    testImplementation('org.flywaydb:flyway-core:10.0.1')
+    testImplementation('org.flywaydb:flyway-database-postgresql:10.0.1')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testRuntimeOnly('com.h2database:h2')
+}
+
+tasks.named('bootBuildImage') {
+    builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+flyway {
+    url = System.getenv('FLYWAY_DB') ?: 'jdbc:postgresql://localhost:5432/docenela'
+    user = System.getenv('FLYWAY_USER') ?: 'doce'
+    password = System.getenv('FLYWAY_PASS') ?: 'nela'
 }
 
 test {
