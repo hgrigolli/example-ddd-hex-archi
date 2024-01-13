@@ -497,7 +497,8 @@ class FlightTest {
         );
 
         // when
-        aFlight.depart();
+        aFlight.board();
+        aFlight.depart(LocalTime.of(17, 32));
 
         // then
         Assertions.assertEquals(FlightStatus.DEPARTED, aFlight.getStatus());
@@ -517,6 +518,9 @@ class FlightTest {
         );
 
         // when
+        aFlight.board();
+        aFlight.depart(LocalTime.of(17, 32));
+        aFlight.inAir();
         aFlight.land();
 
         // then
@@ -537,7 +541,11 @@ class FlightTest {
         );
 
         // when
-        aFlight.arrive();
+        aFlight.board();
+        aFlight.depart(LocalTime.of(17, 32));
+        aFlight.inAir();
+        aFlight.land();
+        aFlight.arrive(LocalTime.of(18, 7));
 
         // then
         Assertions.assertEquals(FlightStatus.ARRIVED, aFlight.getStatus());
@@ -581,13 +589,13 @@ class FlightTest {
         final var expectedDelay = Duration.of(-30, ChronoUnit.MINUTES);
 
         // when
-        final var domainException = Assertions.assertThrows(
-                DomainException.class,
+        final var illegalArgumentException = Assertions.assertThrows(
+                IllegalArgumentException.class,
                 () -> aFlight.delay(expectedDelay)
         );
 
         // then
-        Assertions.assertEquals("Delay must be greater than zero", domainException.getMessage());
+        Assertions.assertEquals("Delay must be greater than zero", illegalArgumentException.getMessage());
     }
 
     @Test
@@ -605,13 +613,13 @@ class FlightTest {
         final var expectedDelay = Duration.of(0, ChronoUnit.MINUTES);
 
         // when
-        final var domainException = Assertions.assertThrows(
-                DomainException.class,
+        final var illegalArgumentException = Assertions.assertThrows(
+                IllegalArgumentException.class,
                 () -> aFlight.delay(expectedDelay)
         );
 
         // then
-        Assertions.assertEquals("Delay must be greater than zero", domainException.getMessage());
+        Assertions.assertEquals("Delay must be greater than zero", illegalArgumentException.getMessage());
     }
 
     @Test
@@ -620,7 +628,7 @@ class FlightTest {
         final var aFlight = Flight.newFlight(
                 "JJ1234",
                 LocalDate.of(2024, 1, 12),
-                null,
+                LocalTime.of(18, 10),
                 LocalTime.of(19, 0),
                 "B737",
                 "GRU",
@@ -629,13 +637,13 @@ class FlightTest {
         final Duration expectedDelay = null;
 
         // when
-        final var domainException = Assertions.assertThrows(
-                DomainException.class,
+        final var illegalArgumentException = Assertions.assertThrows(
+                IllegalArgumentException.class,
                 () -> aFlight.delay(expectedDelay)
         );
 
         // then
-        Assertions.assertEquals("Delay is required", domainException.getMessage());
+        Assertions.assertEquals("Delay is required", illegalArgumentException.getMessage());
     }
 
     @Test
@@ -653,6 +661,7 @@ class FlightTest {
         final var expectedOnHoldUntil = LocalDateTime.of(2024, 1, 14, 20, 10);
 
         // when
+        aFlight.board();
         aFlight.onHold(expectedOnHoldUntil);
 
         // then
@@ -675,13 +684,13 @@ class FlightTest {
         final LocalDateTime expectedOnHoldUntil = null;
 
         // when
-        final var domainException = Assertions.assertThrows(
-                DomainException.class,
+        final var illegalArgumentException = Assertions.assertThrows(
+                IllegalArgumentException.class,
                 () -> aFlight.onHold(expectedOnHoldUntil)
         );
 
         // then
-        Assertions.assertEquals("On hold until is required", domainException.getMessage());
+        Assertions.assertEquals("On hold until is required", illegalArgumentException.getMessage());
     }
 
     @Test
@@ -698,13 +707,13 @@ class FlightTest {
         );
 
         // when
+        aFlight.board();
+        aFlight.depart(LocalTime.of(17, 32));
         aFlight.inAir();
 
         // then
         Assertions.assertEquals(FlightStatus.IN_AIR, aFlight.getStatus());
     }
-
-
 
 
 

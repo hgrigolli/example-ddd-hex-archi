@@ -22,6 +22,8 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
     private String departureAirport;
     private String arrivalAirport;
     private FlightStatus status;
+    private Duration delay;
+    private LocalDateTime onHoldUntil;
 
     private Flight(
             final FlightID anID,
@@ -173,7 +175,17 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         return status;
     }
 
+    public Duration getDelay() {
+        return delay;
+    }
+
+    public LocalDateTime getOnHoldUntil() {
+        return onHoldUntil;
+    }
+
     public void cancel() {
+        this.status = FlightStatus.CANCELLED;
+        selfValidate();
     }
 
     public void reschedule(
@@ -184,26 +196,92 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         this.departureDate = newDepartureDate;
         this.scheduledDepartureTime = newScheduledDepartureTime;
         this.scheduledArrivalTime = newScheduledArrivalTime;
+        selfValidate();
     }
 
     public void board() {
+        if (status == FlightStatus.SCHEDULED || status == FlightStatus.DELAYED || status == FlightStatus.ON_HOLD) {
+            this.status = FlightStatus.BOARDING;
+        } else {
+            throw new IllegalStateException("Flight can only board if it is scheduled or delayed");
+        }
+        selfValidate();
     }
 
-    public void depart() {
+    public void depart(LocalTime departureDateTime) {
+        if (status == FlightStatus.BOARDING || status == FlightStatus.ON_HOLD) {
+            this.status = FlightStatus.DEPARTED;
+            this.actualDepartureTime = departureDateTime;
+        } else {
+            throw new IllegalStateException("Flight can only depart if it is boarding or on hold");
+        }
+        selfValidate();
     }
 
     public void land() {
+        if (status == FlightStatus.IN_AIR) {
+            this.status = FlightStatus.LANDED;
+        } else {
+            throw new IllegalStateException("Flight can only land if it is in the air");
+        }
+        selfValidate();
     }
 
-    public void arrive() {
+    public void arrive(LocalTime arrivalDateTime) {
+        if (status == FlightStatus.LANDED) {
+            this.status = FlightStatus.ARRIVED;
+            this.actualArrivalTime = arrivalDateTime;
+        } else {
+            throw new IllegalStateException("Flight can only arrive if it has landed");
+        }
+        selfValidate();
     }
 
     public void delay(Duration expectedDelay) {
+        if(expectedDelay == null){
+            throw new IllegalArgumentException("Delay is required");
+        }
+
+        if(expectedDelay.isNegative()){
+            throw new IllegalArgumentException("Delay must be greater than zero");
+        }
+
+        if(expectedDelay.isZero()) {
+            throw new IllegalArgumentException("Delay must be greater than zero");
+        }
+
+        if (status == FlightStatus.SCHEDULED) {
+            this.status = FlightStatus.DELAYED;
+            this.delay = expectedDelay;
+        } else {
+            throw new IllegalStateException("Flight can only be delayed if it is scheduled");
+        }
+        selfValidate();
     }
 
     public void onHold(LocalDateTime expectedOnHoldUntil) {
+        if(expectedOnHoldUntil == null){
+            throw new IllegalArgumentException("On hold until is required");
+        }
+
+        if(expectedOnHoldUntil.isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("On hold until must be in the future");
+        }
+
+        if (status == FlightStatus.BOARDING) {
+            this.status = FlightStatus.ON_HOLD;
+            this.onHoldUntil = expectedOnHoldUntil;
+        } else {
+            throw new IllegalStateException("Flight can only be put on hold if it is boarding");
+        }
     }
 
     public void inAir() {
+        if (status == FlightStatus.DEPARTED) {
+            this.status = FlightStatus.IN_AIR;
+        } else {
+            throw new IllegalStateException("Flight can only be in air if it has departed");
+        }
+        selfValidate();
     }
 }
