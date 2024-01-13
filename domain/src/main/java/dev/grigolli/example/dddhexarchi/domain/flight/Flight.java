@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 public class Flight extends AggregateRoot<FlightID> implements Cloneable {
 
-    private String flightNumber;
+    private final String flightNumber;
     private LocalDate departureDate;
     private LocalTime scheduledDepartureTime;
     private LocalTime actualDepartureTime;
