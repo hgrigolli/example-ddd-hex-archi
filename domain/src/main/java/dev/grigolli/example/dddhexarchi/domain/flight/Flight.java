@@ -282,4 +282,13 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         selfValidate();
     }
 
+    public void changeAircraft(String newAircraftID) {
+        if (status == FlightStatus.SCHEDULED || status == FlightStatus.DELAYED || status == FlightStatus.ON_HOLD) {
+            this.aircraftID = newAircraftID;
+        } else {
+            throw new IllegalStateException("Flight can only change aircraft if it is scheduled, delayed or on hold");
+        }
+        selfValidate();
+    }
+
 }

@@ -717,6 +717,99 @@ class FlightTest {
         Assertions.assertEquals(FlightStatus.IN_AIR, aFlight.getStatus());
     }
 
+    @Test
+    void givenAScheduledFlight_whenChangeAircraft_thenShouldChangeTheAircraft() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 13),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedAircraftID = "A320";
+
+        // when
+        aFlight.changeAircraft(expectedAircraftID);
+
+        // then
+        Assertions.assertEquals(expectedAircraftID, aFlight.getAircraftID());
+    }
+
+    @Test
+    void givenADelayedFlight_whenChangeAircraft_thenShouldChangeTheAircraft() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 13),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedAircraftID = "A320";
+        aFlight.delay(Duration.of(30, ChronoUnit.MINUTES));
+
+        // when
+        aFlight.changeAircraft(expectedAircraftID);
+
+        // then
+        Assertions.assertEquals(expectedAircraftID, aFlight.getAircraftID());
+    }
+
+    @Test
+    void givenAOnHoldFlight_whenChangeAircraft_thenShouldChangeTheAircraft() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2024, 1, 13),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedAircraftID = "A320";
+
+        aFlight.board();
+        aFlight.onHold(LocalDateTime.of(2024, 1, 14, 20, 10));
+
+        // when
+        aFlight.changeAircraft(expectedAircraftID);
+
+        // then
+        Assertions.assertEquals(expectedAircraftID, aFlight.getAircraftID());
+    }
+
+    @Test
+    void givenADepartedFlight_whenChangeAircraft_thenShouldThrowADomainException() {
+        // given
+        final var aFlight = Flight.newFlight(
+                "JJ1234",
+                LocalDate.of(2023, 1, 13),
+                LocalTime.of(18, 10),
+                LocalTime.of(19, 0),
+                "B737",
+                "GRU",
+                "CGR"
+        );
+        final var expectedAircraftID = "A320";
+
+        aFlight.board();
+        aFlight.depart(LocalTime.of(17, 32));
+
+        // when
+        final var illegalStateException = Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> aFlight.changeAircraft(expectedAircraftID)
+        );
+
+        // then
+        Assertions.assertEquals("Flight can only change aircraft if it is scheduled, delayed or on hold", illegalStateException.getMessage());
+    }
 
 
 }
