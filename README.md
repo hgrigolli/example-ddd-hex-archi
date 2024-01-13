@@ -1,4 +1,4 @@
-# Java Hexagonal Architecute and DDD Example
+# Java DDD and Hexagonal Architecute Example
 
 ### 🎯 Objectives
 
