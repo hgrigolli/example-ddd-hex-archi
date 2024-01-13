@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Flight extends AggregateRoot<FlightID> implements Cloneable {
 
@@ -291,4 +292,16 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         selfValidate();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Flight flight)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(getFlightNumber(), flight.getFlightNumber()) && Objects.equals(getDepartureDate(), flight.getDepartureDate()) && Objects.equals(getScheduledDepartureTime(), flight.getScheduledDepartureTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getFlightNumber(), getDepartureDate(), getScheduledDepartureTime());
+    }
 }
