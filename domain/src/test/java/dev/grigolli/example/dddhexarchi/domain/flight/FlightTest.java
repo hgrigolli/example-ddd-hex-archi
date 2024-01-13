@@ -539,6 +539,7 @@ class FlightTest {
                 "GRU",
                 "CGR"
         );
+        final var expectedDuration = Duration.of(35, ChronoUnit.MINUTES);
 
         // when
         aFlight.board();
@@ -549,6 +550,7 @@ class FlightTest {
 
         // then
         Assertions.assertEquals(FlightStatus.ARRIVED, aFlight.getStatus());
+        Assertions.assertEquals(expectedDuration, aFlight.getFlightTime());
     }
 
     @Test

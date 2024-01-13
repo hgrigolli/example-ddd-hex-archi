@@ -156,7 +156,10 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
     }
 
     public Duration getFlightTime() {
-        return flightTime;
+        if(actualArrivalTime == null || actualDepartureTime == null) {
+            return null;
+        }
+        return Duration.between(actualDepartureTime, actualArrivalTime);
     }
 
     public String getAircraftID() {
@@ -284,4 +287,5 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         }
         selfValidate();
     }
+
 }
