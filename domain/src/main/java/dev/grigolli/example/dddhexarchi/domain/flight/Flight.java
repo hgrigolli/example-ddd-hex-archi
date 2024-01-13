@@ -17,7 +17,6 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
     private LocalTime actualDepartureTime;
     private LocalTime scheduledArrivalTime;
     private LocalTime actualArrivalTime;
-    private Duration flightTime;
     private String aircraftID;
     private String departureAirport;
     private String arrivalAirport;
@@ -33,7 +32,6 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
             final LocalTime actualDepartureTime,
             final LocalTime scheduledArrivalTime,
             final LocalTime actualArrivalTime,
-            final Duration flightTime,
             final String aircraftID,
             final String departureAirport,
             final String arrivalAirport,
@@ -46,7 +44,6 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         this.actualDepartureTime = actualDepartureTime;
         this.scheduledArrivalTime = scheduledArrivalTime;
         this.actualArrivalTime = actualArrivalTime;
-        this.flightTime = flightTime;
         this.aircraftID = aircraftID;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
@@ -72,7 +69,6 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
                 null,
                 scheduledArrivalTime,
                 null,
-                null,
                 aircraftID,
                 departureAirport,
                 arrivalAirport,
@@ -88,7 +84,6 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
             final LocalTime scheduledArrivalTime,
             final LocalTime actualArrivalTime,
             final LocalTime actualDepartureTime,
-            final Duration flightTime,
             final String aircraftID,
             final String departureAirport,
             final String arrivalAirport,
@@ -102,7 +97,6 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
                 actualDepartureTime,
                 scheduledArrivalTime,
                 actualArrivalTime,
-                flightTime,
                 aircraftID,
                 departureAirport,
                 arrivalAirport,
