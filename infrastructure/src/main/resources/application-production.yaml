@@ -1,0 +1,11 @@
+postgresql:
+  username: ${DATABASE_POSTGRES_USERNAME:flight}
+  password: ${DATABASE_POSTGRES_PASSWORD:air1234}
+  schema: airtransport
+  url:  ${DATABASE_POSTGRES_PASSWORD:localhost:5432}
+
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
