@@ -62,7 +62,7 @@ class GetFlightByIDUseCaseTest extends UseCaseTest {
     }
 
     @Test
-    void givenAInvalidID_whenCallsGetClienteByID_shouldReturnNotFound() {
+    void givenAInvalidID_whenCallsGetFlightByID_shouldReturnNotFound() {
         final var expectedID = FlightID.from("1234");
         final var expectedErrorMessage = "Flight with ID %s not found".formatted(expectedID.getValue());
 

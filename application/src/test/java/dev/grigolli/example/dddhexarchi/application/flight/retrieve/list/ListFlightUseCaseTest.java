@@ -33,7 +33,7 @@ class ListFlightUseCaseTest extends UseCaseTest {
     }
 
     @Test
-    void givenAValidQuery_whenCallListClientes_thenShouldReturnClientes() {
+    void givenAValidQuery_whenCallListFlights_thenShouldReturnFlights() {
         final var flights = of(
                 Flight.newFlight(
                         "LA8138",
