@@ -1,15 +1,22 @@
 package dev.grigolli.example.dddhexarchi.application.flight.reschedule;
 
+import dev.grigolli.example.dddhexarchi.domain.flight.FlightID;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public record RescheduleFlightCommand(
-        //TODO: Attributes here
+        FlightID id,
+        LocalDate departureDate,
+        LocalTime scheduledDepartureTime,
+        LocalTime scheduledArrivalTime
+
 ) {
-
     public static RescheduleFlightCommand with(
-            //TODO: Attributes here
-    ) {
-        return new RescheduleFlightCommand(
-                //TODO: Attributes here
-        );
-
+            FlightID flightID,
+            LocalDate departureDate,
+            LocalTime scheduledDepartureTime,
+            LocalTime scheduledArrivalTime) {
+        return new RescheduleFlightCommand(flightID, departureDate, scheduledDepartureTime, scheduledArrivalTime);
     }
 }
