@@ -140,7 +140,7 @@ class CreateFlightUseCaseTest extends UseCaseTest {
 
     @Test
     void givenAnInvalidCommandWithNullDepartureDate_whenCallExecute_thenShouldThrowException() {
-        final var expectedFlightNumber = "";
+        final var expectedFlightNumber = "JJ1234";
         final LocalDate expectedDepartureDate = null;
         final var expectedScheduledDepartureTime = LocalTime.of(17, 20);
         final var expectedScheduledArrivalTime = LocalTime.of(18, 10);
@@ -172,7 +172,7 @@ class CreateFlightUseCaseTest extends UseCaseTest {
 
     @Test
     void givenAnInvalidCommandWithNullScheduledDepartureTime_whenCallExecute_thenShouldThrowException() {
-        final var expectedFlightNumber = "";
+        final var expectedFlightNumber = "JJ1234";
         final var expectedDepartureDate = LocalDate.of(2024, 1, 12);
         final LocalTime expectedScheduledDepartureTime = null;
         final var expectedScheduledArrivalTime = LocalTime.of(18, 10);
