@@ -124,7 +124,7 @@ class ListFlightUseCaseTest extends UseCaseTest {
         final var aQuery =
                 new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
 
-        when(flightGateway.findAll(eq(aQuery)))
+        when(flightGateway.findAll(aQuery))
                 .thenThrow(new RuntimeException("Error"));
 
         Assertions.assertThrows(RuntimeException.class, () -> useCase.execute(aQuery));
