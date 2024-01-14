@@ -11,7 +11,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-public class ${Operation}${Domain}UseCaseTest extends UseCaseTest {
+class ${Operation}${Domain}UseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private Default${Operation}${Domain}UseCase useCase;
