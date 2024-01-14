@@ -7,7 +7,6 @@ public enum FlightStatus {
     BOARDING,
     ON_HOLD,
     DEPARTED,
-    IN_AIR,
     LANDED,
     ARRIVED
 }

@@ -1,0 +1,15 @@
+package dev.grigolli.example.dddhexarchi.domain.utils;
+
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+
+public class LocalTimeUtils {
+
+    private LocalTimeUtils() {
+    }
+
+    public static LocalTime now() {
+        return LocalTime.now().truncatedTo(ChronoUnit.MICROS);
+    }
+
+}

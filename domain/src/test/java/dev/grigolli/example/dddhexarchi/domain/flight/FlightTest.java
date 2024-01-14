@@ -498,7 +498,7 @@ class FlightTest {
 
         // when
         aFlight.board();
-        aFlight.depart(LocalTime.of(17, 32));
+        aFlight.depart();
 
         // then
         Assertions.assertEquals(FlightStatus.DEPARTED, aFlight.getStatus());
@@ -519,8 +519,7 @@ class FlightTest {
 
         // when
         aFlight.board();
-        aFlight.depart(LocalTime.of(17, 32));
-        aFlight.inAir();
+        aFlight.depart();
         aFlight.land();
 
         // then
@@ -539,18 +538,15 @@ class FlightTest {
                 "GRU",
                 "CGR"
         );
-        final var expectedDuration = Duration.of(35, ChronoUnit.MINUTES);
 
         // when
         aFlight.board();
-        aFlight.depart(LocalTime.of(17, 32));
-        aFlight.inAir();
+        aFlight.depart();
         aFlight.land();
-        aFlight.arrive(LocalTime.of(18, 7));
+        aFlight.arrive();
 
         // then
         Assertions.assertEquals(FlightStatus.ARRIVED, aFlight.getStatus());
-        Assertions.assertEquals(expectedDuration, aFlight.getFlightTime());
     }
 
     @Test
@@ -696,28 +692,6 @@ class FlightTest {
     }
 
     @Test
-    void givenAFlight_whenCallInAir_thenShouldPutTheFlightInAir() {
-        // given
-        final var aFlight = Flight.newFlight(
-                "JJ1234",
-                LocalDate.of(2024, 1, 13),
-                LocalTime.of(18, 10),
-                LocalTime.of(19, 0),
-                "B737",
-                "GRU",
-                "CGR"
-        );
-
-        // when
-        aFlight.board();
-        aFlight.depart(LocalTime.of(17, 32));
-        aFlight.inAir();
-
-        // then
-        Assertions.assertEquals(FlightStatus.IN_AIR, aFlight.getStatus());
-    }
-
-    @Test
     void givenAScheduledFlight_whenChangeAircraft_thenShouldChangeTheAircraft() {
         // given
         final var aFlight = Flight.newFlight(
@@ -799,7 +773,7 @@ class FlightTest {
         final var expectedAircraftID = "A320";
 
         aFlight.board();
-        aFlight.depart(LocalTime.of(17, 32));
+        aFlight.depart();
 
         // when
         final var illegalStateException = Assertions.assertThrows(

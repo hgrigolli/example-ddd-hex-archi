@@ -1,6 +1,8 @@
 package dev.grigolli.example.dddhexarchi.domain.flight;
 
 import dev.grigolli.example.dddhexarchi.domain.AggregateRoot;
+import dev.grigolli.example.dddhexarchi.domain.utils.InstantUtils;
+import dev.grigolli.example.dddhexarchi.domain.utils.LocalTimeUtils;
 import dev.grigolli.example.dddhexarchi.domain.validation.ValidationHandler;
 import dev.grigolli.example.dddhexarchi.domain.validation.handler.ThrowsValidationHandler;
 
@@ -207,10 +209,10 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         selfValidate();
     }
 
-    public void depart(LocalTime departureDateTime) {
+    public void depart() {
         if (status == FlightStatus.BOARDING || status == FlightStatus.ON_HOLD) {
             this.status = FlightStatus.DEPARTED;
-            this.actualDepartureTime = departureDateTime;
+            this.actualDepartureTime = LocalTimeUtils.now();
         } else {
             throw new IllegalStateException("Flight can only depart if it is boarding or on hold");
         }
@@ -218,7 +220,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
     }
 
     public void land() {
-        if (status == FlightStatus.IN_AIR) {
+        if (status == FlightStatus.DEPARTED) {
             this.status = FlightStatus.LANDED;
         } else {
             throw new IllegalStateException("Flight can only land if it is in the air");
@@ -226,10 +228,10 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         selfValidate();
     }
 
-    public void arrive(LocalTime arrivalDateTime) {
+    public void arrive() {
         if (status == FlightStatus.LANDED) {
             this.status = FlightStatus.ARRIVED;
-            this.actualArrivalTime = arrivalDateTime;
+            this.actualArrivalTime = LocalTimeUtils.now();
         } else {
             throw new IllegalStateException("Flight can only arrive if it has landed");
         }
@@ -273,15 +275,6 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         } else {
             throw new IllegalStateException("Flight can only be put on hold if it is boarding");
         }
-    }
-
-    public void inAir() {
-        if (status == FlightStatus.DEPARTED) {
-            this.status = FlightStatus.IN_AIR;
-        } else {
-            throw new IllegalStateException("Flight can only be in air if it has departed");
-        }
-        selfValidate();
     }
 
     public void changeAircraft(String newAircraftID) {
