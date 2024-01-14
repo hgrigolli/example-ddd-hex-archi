@@ -101,7 +101,7 @@ class ListFlightUseCaseTest extends UseCaseTest {
         final var expectedItemsCount = 0;
         final var expectedResult = expectedPagination.map(FlightListOutput::from);
 
-        when(flightGateway.findAll(eq(aQuery)))
+        when(flightGateway.findAll(aQuery))
                 .thenReturn(expectedPagination);
 
         final var actualResult = useCase.execute(aQuery);
