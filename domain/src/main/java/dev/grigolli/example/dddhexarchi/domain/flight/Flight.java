@@ -260,18 +260,18 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         selfValidate();
     }
 
-    public void onHold(LocalDateTime expectedOnHoldUntil) {
-        if(expectedOnHoldUntil == null){
+    public void onHold(LocalDateTime onHoldUntil) {
+        if(onHoldUntil == null){
             throw new IllegalArgumentException("On hold until is required");
         }
 
-        if(expectedOnHoldUntil.isBefore(LocalDateTime.now())){
+        if(onHoldUntil.isBefore(LocalDateTime.now())){
             throw new IllegalArgumentException("On hold until must be in the future");
         }
 
         if (status == FlightStatus.BOARDING) {
             this.status = FlightStatus.ON_HOLD;
-            this.onHoldUntil = expectedOnHoldUntil;
+            this.onHoldUntil = onHoldUntil;
         } else {
             throw new IllegalStateException("Flight can only be put on hold if it is boarding");
         }
