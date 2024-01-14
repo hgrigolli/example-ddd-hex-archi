@@ -186,7 +186,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         selfValidate();
     }
 
-    public void reschedule(
+    public Flight reschedule(
             final LocalDate newDepartureDate,
             final LocalTime newScheduledDepartureTime,
             final LocalTime newScheduledArrivalTime
@@ -195,6 +195,7 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         this.scheduledDepartureTime = newScheduledDepartureTime;
         this.scheduledArrivalTime = newScheduledArrivalTime;
         selfValidate();
+        return this;
     }
 
     public void board() {

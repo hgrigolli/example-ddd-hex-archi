@@ -54,7 +54,7 @@ class RescheduleFlightUseCaseTest extends UseCaseTest {
         final var expectedScheduledArrivalTime = LocalTime.of(18, 20);
 
         final var aCommand = RescheduleFlightCommand.with(
-                expectedID,
+                expectedID.getValue(),
                 expectedDepartureDate,
                 expectedScheduledDepartureTime,
                 expectedScheduledArrivalTime

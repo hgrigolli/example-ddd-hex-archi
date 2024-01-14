@@ -6,14 +6,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record RescheduleFlightCommand(
-        FlightID id,
+        String id,
         LocalDate departureDate,
         LocalTime scheduledDepartureTime,
         LocalTime scheduledArrivalTime
 
 ) {
     public static RescheduleFlightCommand with(
-            FlightID flightID,
+            String flightID,
             LocalDate departureDate,
             LocalTime scheduledDepartureTime,
             LocalTime scheduledArrivalTime) {
