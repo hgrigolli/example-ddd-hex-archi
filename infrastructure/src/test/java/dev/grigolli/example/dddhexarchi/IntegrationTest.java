@@ -1,6 +1,6 @@
 package dev.grigolli.example.dddhexarchi;
 
-import br.com.docenela.admin.infrastructure.configuration.WebServerConfig;
+import dev.grigolli.example.dddhexarchi.infrastructure.configuration.WebServerConfig;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
