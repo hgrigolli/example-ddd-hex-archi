@@ -30,7 +30,7 @@ class DepartFlightUseCaseTest extends UseCaseTest {
     }
 
     @Test
-    void givenAValidCommand_whenCallExecute_thenFlightShouldBeBoarded() {
+    void givenAValidCommand_whenCallExecute_thenFlightShouldBeDeparted() {
         // given
         final var flight = Flight.newFlight(
                 "LA8138",
