@@ -38,7 +38,9 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
             final String aircraftID,
             final String departureAirport,
             final String arrivalAirport,
-            final FlightStatus status
+            final FlightStatus status,
+            final Duration delay,
+            final LocalDateTime onHoldUntil
     ) {
         super(anID);
         this.flightNumber = flightNumber;
@@ -51,6 +53,8 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.status = status;
+        this.delay = delay;
+        this.onHoldUntil = onHoldUntil;
         selfValidate();
     }
 
@@ -75,7 +79,9 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
                 aircraftID,
                 departureAirport,
                 arrivalAirport,
-                FlightStatus.SCHEDULED
+                FlightStatus.SCHEDULED,
+                Duration.ZERO,
+                null
         );
     }
 
@@ -90,7 +96,9 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
             final String aircraftID,
             final String departureAirport,
             final String arrivalAirport,
-            final FlightStatus status
+            final FlightStatus status,
+            final Duration delay,
+            final LocalDateTime onHoldUntil
 
     ) {
         return new Flight(anID,
@@ -103,7 +111,9 @@ public class Flight extends AggregateRoot<FlightID> implements Cloneable {
                 aircraftID,
                 departureAirport,
                 arrivalAirport,
-                status
+                status,
+                delay,
+                onHoldUntil
         );
     }
 

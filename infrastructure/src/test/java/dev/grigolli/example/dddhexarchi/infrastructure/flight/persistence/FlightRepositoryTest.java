@@ -1,9 +1,10 @@
 package dev.grigolli.example.dddhexarchi.infrastructure.flight.persistence;
 
-import dev.grigolli.example.dddhexarchi.PostgreSQLGatewayTest;
+import dev.grigolli.example.dddhexarchi.RepositoryTest;
 import dev.grigolli.example.dddhexarchi.domain.flight.Flight;
-import jakarta.validation.ConstraintViolationException;
 import org.hibernate.PropertyValueException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.DataException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@PostgreSQLGatewayTest
+@RepositoryTest
 class FlightRepositoryTest {
 
     @Autowired
@@ -62,7 +63,7 @@ class FlightRepositoryTest {
 
         // when
         final var aFlight = Flight.newFlight(
-                null,
+                "JJ1234",
                 LocalDate.of(2024, 1, 12),
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
@@ -72,6 +73,9 @@ class FlightRepositoryTest {
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setFlightNumber(null);
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
                         () -> flightRepository.save(anEntity));
@@ -85,13 +89,9 @@ class FlightRepositoryTest {
 
     @Test
     void givenAInvalidFlightWithFlightNumberEmpty_whenSave_thenShouldThrowException() {
-
-        final var expectedProperty = "flightNumber";
-        final var expectedMessage = "not-null property references a null or transient value : dev.grigolli.example.dddhexarchi.infrastructure.flight.persistence.FlightJpaEntity.flightNumber";
-
         // when
         final var aFlight = Flight.newFlight(
-                "",
+                "JJ1234",
                 LocalDate.of(2024, 1, 12),
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
@@ -101,15 +101,15 @@ class FlightRepositoryTest {
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setFlightNumber("");
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(PropertyValueException.class, actualException.getCause());
+        Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
 
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
     }
 
     @Test
@@ -121,7 +121,7 @@ class FlightRepositoryTest {
         // when
         final var aFlight = Flight.newFlight(
                 "JJ1234",
-                null,
+                LocalDate.of(2024, 1, 12),
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
                 "B737",
@@ -130,6 +130,9 @@ class FlightRepositoryTest {
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setDepartureDate(null);
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
                         () -> flightRepository.save(anEntity));
@@ -151,7 +154,7 @@ class FlightRepositoryTest {
         final var aFlight = Flight.newFlight(
                 "JJ1234",
                 LocalDate.of(2024, 1, 12),
-                null,
+                LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
                 "B737",
                 "GRU",
@@ -159,6 +162,9 @@ class FlightRepositoryTest {
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setScheduledDepartureTime(null);
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
                         () -> flightRepository.save(anEntity));
@@ -181,13 +187,16 @@ class FlightRepositoryTest {
                 "JJ1234",
                 LocalDate.of(2024, 1, 12),
                 LocalTime.of(17, 20),
-                null,
+                LocalTime.of(18, 10),
                 "B737",
                 "GRU",
                 "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setScheduledArrivalTime(null);
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
                         () -> flightRepository.save(anEntity));
@@ -211,12 +220,15 @@ class FlightRepositoryTest {
                 LocalDate.of(2024, 1, 12),
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
-                null,
+                "B737",
                 "GRU",
                 "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setAircraftID(null);
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
                         () -> flightRepository.save(anEntity));
@@ -230,31 +242,28 @@ class FlightRepositoryTest {
 
     @Test
     void givenAInvalidFlightWithScheduledAircraftIDEmpty_whenSave_thenShouldThrowException() {
-
-        final var expectedProperty = "aircraftID";
-        final var expectedMessage = "not-null property references a null or transient value : dev.grigolli.example.dddhexarchi.infrastructure.flight.persistence.FlightJpaEntity.aircraftID";
-
-        // when
+        // given
         final var aFlight = Flight.newFlight(
                 "JJ1234",
                 LocalDate.of(2024, 1, 12),
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
-                "",
+                "B737",
                 "GRU",
                 "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setAircraftID("");
+
+        //when
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(PropertyValueException.class, actualException.getCause());
-
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
+        //then
+        Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
     }
 
     @Test
@@ -270,11 +279,14 @@ class FlightRepositoryTest {
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
                 "B737",
-                null,
+                "GRU",
                 "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setDepartureAirport(null);
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
                         () -> flightRepository.save(anEntity));
@@ -299,47 +311,45 @@ class FlightRepositoryTest {
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
                 "B737",
-                "",
+                "GRU",
                 "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setDepartureAirport("");
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(PropertyValueException.class, actualException.getCause());
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
+        Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
     }
 
     @Test
     void givenAInvalidFlightWithDepartureAirportMoreThan3Char_whenSave_thenShouldThrowException() {
 
-        final var expectedProperty = "departureAirport";
-        final var expectedMessage = "size must be between 3 and 3";
-
-        // when
+        //given
         final var aFlight = Flight.newFlight(
                 "JJ1234",
                 LocalDate.of(2024, 1, 12),
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
                 "B737",
-                "GRUA",
+                "GRU",
                 "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        // when
+        anEntity.setDepartureAirport("CGRA");
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
+        Assertions.assertInstanceOf(DataException.class, actualException.getCause());
     }
 
     @Test
@@ -355,19 +365,19 @@ class FlightRepositoryTest {
                 LocalTime.of(17, 20),
                 LocalTime.of(18, 10),
                 "B737",
-                "GR",
+                "GRU",
                 "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setDepartureAirport("CG");
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
+        Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
     }
 
     @Test
@@ -384,10 +394,13 @@ class FlightRepositoryTest {
                 LocalTime.of(18, 10),
                 "B737",
                 "GRU",
-                null
+                "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setArrivalAirport(null);
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
                         () -> flightRepository.save(anEntity));
@@ -413,28 +426,22 @@ class FlightRepositoryTest {
                 LocalTime.of(18, 10),
                 "B737",
                 "GRU",
-                ""
+                "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setArrivalAirport("");
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(PropertyValueException.class, actualException.getCause());
-
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
+        Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
     }
-
 
     @Test
     void givenAInvalidFlightWithArrivalAirportMoreThan3Char_whenSave_thenShouldThrowException() {
-
-        final var expectedProperty = "arrivalAirport";
-        final var expectedMessage = "size must be between 3 and 3";
-
         // when
         final var aFlight = Flight.newFlight(
                 "JJ1234",
@@ -443,26 +450,23 @@ class FlightRepositoryTest {
                 LocalTime.of(18, 10),
                 "B737",
                 "GRU",
-                "CGRA"
+                "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setArrivalAirport("CGRA");
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
+        Assertions.assertInstanceOf(DataException.class, actualException.getCause());
     }
 
     @Test
     void givenAInvalidFlightWithArrivalAirportLessThan3Char_whenSave_thenShouldThrowException() {
 
-        final var expectedProperty = "arrivalAirport";
-        final var expectedMessage = "size must be between 3 and 3";
-
         // when
         final var aFlight = Flight.newFlight(
                 "JJ1234",
@@ -471,18 +475,19 @@ class FlightRepositoryTest {
                 LocalTime.of(18, 10),
                 "B737",
                 "GRU",
-                "CG"
+                "CGR"
         );
 
         final var anEntity = FlightJpaEntity.from(aFlight);
+
+        anEntity.setArrivalAirport("CG");
+
         final var actualException =
                 Assertions.assertThrows(DataIntegrityViolationException.class,
-                        () -> flightRepository.save(anEntity));
+                        () -> flightRepository.saveAndFlush(anEntity));
 
-        final var actualCause = Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
-        // then
-        Assertions.assertEquals(expectedProperty, actualCause.getPropertyName());
-        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
+        Assertions.assertInstanceOf(ConstraintViolationException.class, actualException.getCause());
+
     }
 
 

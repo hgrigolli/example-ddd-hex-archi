@@ -65,8 +65,8 @@ tasks.named('bootBuildImage') {
 
 flyway {
     url = System.getenv('FLYWAY_DB') ?: 'jdbc:postgresql://localhost:5432/docenela'
-    user = System.getenv('FLYWAY_USER') ?: 'doce'
-    password = System.getenv('FLYWAY_PASS') ?: 'nela'
+    user = System.getenv('FLYWAY_USER') ?: 'flight'
+    password = System.getenv('FLYWAY_PASS') ?: 'air1234'
 }
 
 test {
