@@ -24,4 +24,6 @@ CREATE TABLE flight (
     delay INTEGER,
     onHoldUntil TIMESTAMP,
     PRIMARY KEY (flightNumber)
+    constraint chk_t_departureAirport check (departureAirport ~ '^[A-Z]{3}$')
+    constraint chk_t_arrivalAirport check (arrivalAirport ~ '^[A-Z]{3}$')
 );
