@@ -93,7 +93,7 @@ public class FlightPostgreSQLGateway implements FlightGateway {
         final Specification<FlightJpaEntity> flightNumberLike = like("flightNumber", str);
         final Specification<FlightJpaEntity> departureAirportLike = like("departureAirport", str);
         final Specification<FlightJpaEntity> arrivalAirportLike = like("arrivalAirport", str);
-        final Specification<FlightJpaEntity> flightStatusLike = like("flightStatus", str);
+        final Specification<FlightJpaEntity> flightStatusLike = like("status", str);
         final Specification<FlightJpaEntity> aircraftIDLike = like("aircraftID", str);
 
         return flightNumberLike.or(departureAirportLike).or(arrivalAirportLike).or(flightStatusLike).or(aircraftIDLike);

@@ -372,5 +372,51 @@ class FlightPostgreSQLGatewayTest {
 
     }
 
+    @Test
+    void givenPrePersistedFlights_whenCallsFindAllWithArrivalAirportFilter_thenShouldReturnPaginatedFiltered() {
+        final var expectedPage = 0;
+        final var expectedPerPage = 1;
+        final var expectedTotal = 1;
+
+        final var flightLA8138 = Flight.newFlight(
+                "LA8138",
+                LocalDate.of(2024, 1, 14),
+                LocalTime.of(18, 20),
+                LocalTime.of(21, 10),
+                "A320",
+                "GRU",
+                "AEP"
+        );
+
+        final var flightG31534 = Flight.newFlight(
+                "G31534",
+                LocalDate.of(2024, 1, 14),
+                LocalTime.of(17, 25),
+                LocalTime.of(18, 55),
+                "B737",
+                "GRU",
+                "VIX"
+        );
+
+        Assertions.assertEquals(0, flightRepository.count());
+        flightRepository.saveAllAndFlush(
+                List.of(
+                        FlightJpaEntity.from(flightLA8138),
+                        FlightJpaEntity.from(flightG31534)
+                )
+        );
+
+        Assertions.assertEquals(2, flightRepository.count());
+
+        final var query = new SearchQuery(0, 1, "VIX", "arrivalAirport", "asc");
+
+        final var actualPagination = flightPostgreSQLGateway.findAll(query);
+
+        Assertions.assertEquals(expectedPage, actualPagination.currentPage());
+        Assertions.assertEquals(expectedPerPage, actualPagination.perPage());
+        Assertions.assertEquals(expectedTotal, actualPagination.total());
+        Assertions.assertEquals(1, actualPagination.items().size());
+        Assertions.assertEquals(flightG31534.getId(), actualPagination.items().get(0).getId());
+    }
 
 }
